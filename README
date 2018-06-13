@@ -1,0 +1,27 @@
+
+                                Imam Linear List
+
+                                    (imamLL)
+
+                                   Version 1.1
+                                
+--------------------------------------------------------------------------------------
+
+This is the Imam Linear List, a simple linked list implementation library
+for storing data structures and data lists into the heap memory.
+
+Please read Intro for a detail description and example.
+
+There are example programs in the examples directory and also have a look at the imamll.h header file for a better understanding of the library. 
+
+imamLL is written in C, but should work with C++ natively.
+
+To install imamLL, execute build.sh script in the terminal.
+
+After installing the library to compile your code using gcc just add -limamll in the compile command, e.g: gcc -Wall -o main main.c -limamll
+
+This library is distributed under zlib license. Please read License for more information
+
+Enjoy!
+
+    Md Imam Hossain (emamhd@gmail.com)

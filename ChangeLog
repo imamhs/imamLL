@@ -1,0 +1,19 @@
+imamLL
+
+version 1.0     5 July 2015
+    
+    - initial release
+    - basic doubly linked list support
+    
+version 1.1     10 July 2015
+
+    - extended support for positioning of new elements
+    - fixing of memory leaking due to payload not being freed in the code
+    
+version 1.2     24 July 2015
+
+    - refining of function and struct variables types
+
+version 1.3     27 July 2015
+
+    - further refine data types
