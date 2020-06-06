@@ -33,8 +33,6 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-
-#include <pthread.h>
     
 #define IMAM_LL_VERSION 14
     
