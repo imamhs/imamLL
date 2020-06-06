@@ -83,9 +83,10 @@ int imamLL_list_free (struct imamLL *list)
     return count;
 }
 
-void imamLL_list_rewind (struct imamLL *list)
+void imamLL_list_rewind (struct imamLL *list, char reverse)
 {
-    list->current = NULL;
+    if (reverse == 1) list->current = NULL;
+    else if (reverse == -1) list->current = list->last;
 }
 
 void imamLL_list_error (struct imamLL *list, char *error_message)

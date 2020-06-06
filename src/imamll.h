@@ -33,8 +33,10 @@ extern "C" {
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+
+#include <pthread.h>
     
-#define IMAM_LL_VERSION 12
+#define IMAM_LL_VERSION 14
     
 enum imamLL_errors {
     MEMORY_ALLOCATION = 1,
@@ -78,8 +80,8 @@ extern int imamLL_list_destroy (struct imamLL *list);
 /* Return Value: upon successful returns the number of elements freed in a list, otherwise returns -1 and sets appropriate error no to error variable of a list*/
 extern int imamLL_list_free (struct imamLL *list);
 
-/* rewinds the current element to the first, used by used by imamLL_element_get_* functions */
-extern void imamLL_list_rewind (struct imamLL *list);
+/* rewinds the current element to the first element (reverse = 1) or the last element (reverse = -1)*/
+extern void imamLL_list_rewind (struct imamLL *list, char reverse);
 
 /* copies last error information into *error_message */
 extern void imamLL_list_error (struct imamLL *list, char *error_message);
