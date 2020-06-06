@@ -95,7 +95,7 @@ void show_students (void)
     printf ("\n");
     printf ("There are %ld students in the book\n", student_list->number_of_elements);
     printf ("Total memory allocated %ld bytes\n\n", student_list->size);
-    imamLL_list_rewind (student_list);
+    imamLL_list_rewind (student_list, 1);
     while (1) {
         element = imamLL_element_get_next (student_list);
         if (element == NULL) break;
@@ -135,7 +135,7 @@ void delete_student (void)
     printf ("\n");
     printf ("Student id: ");
     scanf ("%ld", &id);
-    imamLL_list_rewind (student_list);
+    imamLL_list_rewind (student_list, 1);
     while (1) {
         element = imamLL_element_get_next (student_list);
         if (element == NULL) break;
@@ -164,7 +164,7 @@ void find_student (void)
     printf ("\n");
     printf ("Student id: ");
     scanf ("%ld", &id);
-    imamLL_list_rewind (student_list);
+    imamLL_list_rewind (student_list, 1);
     while (1) {
         element = imamLL_element_get_next (student_list);
         if (element == NULL) break;

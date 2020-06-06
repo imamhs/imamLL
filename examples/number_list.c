@@ -49,10 +49,12 @@ int main (int argc, char** argv)
     printf ("There are %ld numbers in the list\n", number_list->number_of_elements);
     printf ("Total memory allocated %ld bytes\n\n", number_list->size);
     
-    imamLL_list_rewind (number_list);
+    imamLL_list_rewind (number_list, -1);
+    if (element == NULL) ;
+    else printf ("%d\n", *((int *)element->data));
     
     while (1) {
-        element = imamLL_element_get_next (number_list);
+        element = imamLL_element_get_prev (number_list);
         if (element == NULL) break;
         else printf ("%d\n", *((int *)element->data));
     }
