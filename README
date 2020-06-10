@@ -5,7 +5,7 @@
                                 
 --------------------------------------------------------------------------------------
 
-A robust and efficient linked list implementation 
+A robust general purpose linked list implementation 
 for storing data structures and data list into the heap memory.
 
 Please read Intro for a detail description and example.
