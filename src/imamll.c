@@ -1,7 +1,7 @@
 /*
     Imam Linear List (imamLL) a simple C based linked list library
     
-    Copyright (c) 2015 Md Imam Hossain
+    Copyright (c) 2015-2023 Md Imam Hossain
 
     This software is provided 'as-is', without any express or implied
     warranty.  In no event will the authors be held liable for any damages
@@ -83,21 +83,21 @@ int imamLL_list_free (struct imamLL *list)
     return count;
 }
 
-void imamLL_list_rewind (struct imamLL *list, char reverse)
+void imamLL_list_rewind (struct imamLL *list, int8_t direction)
 {
-    if (reverse == 1) list->current = NULL;
-    else if (reverse == -1) list->current = list->last;
+    if (direction == 1) list->current = NULL;
+    else if (direction == -1) list->current = list->last;
 }
 
 void imamLL_list_error (struct imamLL *list, char *error_message)
 {
-    if (list->error == MEMORY_ALLOCATION) strcpy (error_message, "Memory allocation for element failed");
-    else if (list->error == EMPTY_LIST) strcpy (error_message, "Element list is empty");
-    else if (list->error == NO_MATCHING_ELEMENT) strcpy (error_message, "Element is not found");
-    else strcpy (error_message, "No error is found");
+    if (list->error == MEMORY_ALLOCATION) strcpy (error_message, "memory allocation for the element failed");
+    else if (list->error == EMPTY_LIST) strcpy (error_message, "element list is empty");
+    else if (list->error == NO_MATCHING_ELEMENT) strcpy (error_message, "element is not found");
+    else strcpy (error_message, "no errors found");
 }
 
-struct imamLL_element *imamLL_element_add (struct imamLL *list, unsigned long element_size, uint32_t position)
+struct imamLL_element *imamLL_element_add (struct imamLL *list, uint64_t element_size, uint8_t position)
 {
     if (list->first == NULL)
     {
