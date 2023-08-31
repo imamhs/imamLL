@@ -97,7 +97,7 @@ void imamLL_list_error (struct imamLL *list, char *error_message)
     else strcpy (error_message, "no errors found");
 }
 
-struct imamLL_element *imamLL_element_add (struct imamLL *list, uint64_t element_size, uint8_t position)
+struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_size, uint8_t position)
 {
     if (list->first == NULL)
     {
@@ -252,7 +252,7 @@ int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element)
     return found;
 }
 
-struct imamLL_element *imamLL_element_get (struct imamLL *list, void *element_data, uint64_t data_size)
+struct imamLL_element *imamLL_element_get (struct imamLL *list, void *element_data, size_t data_size)
 {
     int found = 0;
     struct imamLL_element *tmp = list->first;
