@@ -43,15 +43,23 @@ enum imamLL_errors {
     NO_MATCHING_ELEMENT = 3
 };
 
-enum imamLL_position {
+enum imamLL_positions {
     AT_START = 1,                       /* position new element at the beginning of a list */
     AT_CURRENT = 2,                     /* position new element after the current element  of a list */
     AT_END = 3                          /* position new element at the ending of a list */
 };
 
-enum imamLL_direction {
-    BACKWARD = 1,
-    FORWARD = -1,
+enum imamLL_directions {
+    BACKWARD = 1,                       /* roll backward so that first element is current */
+    FORWARD = -1,                       /* roll forward so that the last element is current */
+};
+
+/* structure of an element */
+struct imamLL_element {
+    void *data;                         /* pointer to the data */
+    size_t size;                        /* size of data in bytes */
+    struct imamLL_element *prev;        /* pointer to the previous element */
+    struct imamLL_element *next;        /* pointer to the next element */
 };
 
 /* structure of a list */
@@ -61,15 +69,7 @@ struct imamLL {
     struct imamLL_element *first;       /* pointer to the first element */
     struct imamLL_element *last;        /* pointer to the last element */
     struct imamLL_element *current;     /* pointer to an arbitrary element, used by imamLL_element_get_* functions */
-    uint8_t error;                          /* error number used by imamLL_list_error function */
-};
-
-/* structure of an element */
-struct imamLL_element {
-    void *data;                         /* pointer to the data */
-    size_t size;                      /* size of data in bytes */
-    struct imamLL_element *prev;        /* pointer to the next element */
-    struct imamLL_element *next;        /* pointer to the first element */
+    uint8_t error;                      /* error number used by imamLL_list_error function */
 };
 
 /* creates a new list by allocating memory and returns the pointer of the list */
@@ -85,7 +85,7 @@ extern int imamLL_list_destroy (struct imamLL *list);
 extern int imamLL_list_free (struct imamLL *list);
 
 /* rewinds the current element to the first element or the last element*/
-extern void imamLL_list_rewind (struct imamLL *list, int8_t direction);
+extern struct imamLL_element *imamLL_list_rewind (struct imamLL *list, int8_t direction);
 
 /* copies last error information into *error_message */
 extern void imamLL_list_error (struct imamLL *list, char *error_message);
@@ -100,7 +100,7 @@ extern int imamLL_element_remove (struct imamLL *list, struct imamLL_element *el
 
 /* returns the pointer of a matching element */
 /* Return Value: upon successful returns pointer to first found element in a list, otherwise returns NULL and sets appropriate error no to error variable of a list*/
-extern struct imamLL_element *imamLL_element_get (struct imamLL *list, void *element_data, size_t data_size);
+extern struct imamLL_element *imamLL_element_get (struct imamLL *list, const void *element_data, size_t data_size);
 
 /* returns the pointer of the next element in the list */
 /* Return Value: upon successful returns pointer to the next element in a list, otherwise returns NULL*/

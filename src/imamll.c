@@ -57,7 +57,7 @@ int imamLL_list_destroy (struct imamLL *list)
 int imamLL_list_free (struct imamLL *list)
 {
     struct imamLL_element *tmp = list->last;
-    register int count = 0;
+    size_t count = 0;
     if (tmp == NULL) {
         list->error = EMPTY_LIST;
         return -1;
@@ -83,10 +83,11 @@ int imamLL_list_free (struct imamLL *list)
     return count;
 }
 
-void imamLL_list_rewind (struct imamLL *list, int8_t direction)
+struct imamLL_element *imamLL_list_rewind (struct imamLL *list, int8_t direction)
 {
-    if (direction == 1) list->current = NULL;
+    if (direction == 1) list->current = list->first;
     else if (direction == -1) list->current = list->last;
+    return list->current;
 }
 
 void imamLL_list_error (struct imamLL *list, char *error_message)
@@ -118,6 +119,7 @@ struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_s
         list->size = list->size + list->first->size;
         list->number_of_elements = list->number_of_elements + 1;
         list->last = list->first;
+        list->current = list->first;
         return list->first;
     }
     else
@@ -172,6 +174,7 @@ struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_s
                 list->current->next->prev = tmp;
             }
         }
+        list->current = tmp;
         return tmp;
     }
 }
@@ -252,17 +255,21 @@ int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element)
     return found;
 }
 
-struct imamLL_element *imamLL_element_get (struct imamLL *list, void *element_data, size_t data_size)
+struct imamLL_element *imamLL_element_get (struct imamLL *list, const void *element_data, size_t data_size)
 {
     int found = 0;
     struct imamLL_element *tmp = list->first;
-    if (tmp == NULL) return NULL;
+    if (tmp == NULL) {
+        list->error = EMPTY_LIST;
+        return NULL;
+    }
     while (tmp != NULL)
     {
         if (tmp->size == data_size) {
             if (memcmp ((char *)tmp->data, (char *)element_data, tmp->size) == 0)
             {
                 found = 1;
+                list->current = tmp;
                 break;
             }
         }
