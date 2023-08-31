@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2015 Md Imam Hossain
+    Copyright (c) 2015-2023 Md Imam Hossain
 
     This software is provided 'as-is', without any express or implied
     warranty.  In no event will the authors be held liable for any damages
@@ -95,15 +95,15 @@ void show_students (void)
     printf ("\n");
     printf ("There are %ld students in the book\n", student_list->number_of_elements);
     printf ("Total memory allocated %ld bytes\n\n", student_list->size);
-    imamLL_list_rewind (student_list, 1);
+    element = imamLL_list_rewind (student_list, BACKWARD);
     while (1) {
-        element = imamLL_element_get_next (student_list);
         if (element == NULL) break;
         else {
             count++;
             student = (struct Student *) element->data;
             printf ("%ld. %s %s %ld\n", count, student->First_Name, student->Last_Name, student->id);
         }
+        element = imamLL_element_get_next (student_list);
     }
 }
 
@@ -122,7 +122,7 @@ void add_student (void)
     scanf ("%s", student->Last_Name);
     printf ("id: ");
     scanf ("%ld", &student->id);
-    printf ("\nRegistered successfully.\n");
+    printf ("\nRegistered student successfully.\n");
 }
 
 void delete_student (void)
@@ -135,9 +135,8 @@ void delete_student (void)
     printf ("\n");
     printf ("Student id: ");
     scanf ("%ld", &id);
-    imamLL_list_rewind (student_list, 1);
+    element = imamLL_list_rewind (student_list, BACKWARD);
     while (1) {
-        element = imamLL_element_get_next (student_list);
         if (element == NULL) break;
         else {
             student = (struct Student *) element->data;
@@ -150,8 +149,9 @@ void delete_student (void)
                 return;
             }
         }
+        element = imamLL_element_get_next (student_list);
     }
-    printf ("No student found.\n");
+    printf ("No students found.\n");
 }
 
 void find_student (void)
@@ -164,9 +164,8 @@ void find_student (void)
     printf ("\n");
     printf ("Student id: ");
     scanf ("%ld", &id);
-    imamLL_list_rewind (student_list, 1);
+    element = imamLL_list_rewind (student_list, BACKWARD);
     while (1) {
-        element = imamLL_element_get_next (student_list);
         if (element == NULL) break;
         else {
             student = (struct Student *) element->data;
@@ -177,6 +176,7 @@ void find_student (void)
                 return;
             }
         }
+        element = imamLL_element_get_next (student_list);
     }
     printf ("No student found.\n");
 }

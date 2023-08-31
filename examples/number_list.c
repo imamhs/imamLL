@@ -1,5 +1,5 @@
 /*
-    Copyright (c) 2015 Md Imam Hossain
+    Copyright (c) 2015-2023 Md Imam Hossain
 
     This software is provided 'as-is', without any express or implied
     warranty.  In no event will the authors be held liable for any damages
@@ -49,14 +49,12 @@ int main (int argc, char** argv)
     printf ("There are %ld numbers in the list\n", number_list->number_of_elements);
     printf ("Total memory allocated %ld bytes\n\n", number_list->size);
     
-    imamLL_list_rewind (number_list, -1);
-    if (element == NULL) ;
-    else printf ("%d\n", *((int *)element->data));
+    element = imamLL_list_rewind (number_list, FORWARD);
     
     while (1) {
-        element = imamLL_element_get_prev (number_list);
         if (element == NULL) break;
         else printf ("%d\n", *((int *)element->data));
+        element = imamLL_element_get_prev (number_list);
     }
     
     if (imamLL_list_destroy (number_list) == -1) printf ("Can not free memory\n");
