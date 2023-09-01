@@ -94,12 +94,12 @@ extern void imamLL_list_error (struct imamLL *list, char *error_message);
 /* Return Value: upon successful returns pointer to newly allocated element, otherwise returns NULL and sets appropriate error no to error variable of a list*/
 extern struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_size, uint8_t position);
 
-/* frees and removes the first matching element *element from the list */
+/* frees and removes the first matching element *element from the list and transfer the data to pop_data */
 /* Return Value: upon successful returns 1, otherwise returns 0 and -1 and sets appropriate error no to error variable of a list*/
-extern int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element);
+extern int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element, void *pop_data);
 
-/* frees and removes the serial number selected element from the list */
-extern void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t num);
+/* frees and removes the serial number selected element from the list and transfer the data to pop_data */
+extern void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t num, void *pop_data);
 
 /* returns the pointer of a matching element */
 /* Return Value: upon successful returns pointer to first found element in a list, otherwise returns NULL and sets appropriate error no to error variable of a list*/

@@ -207,7 +207,7 @@ struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_s
     }
 }
 
-void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t num)
+void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t num, void *pop_data)
 {
     size_t count = 1;
     struct imamLL_element *tmp = NULL;
@@ -247,6 +247,11 @@ void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t
         list->current = prev;
     }
 
+    if (pop_data != NULL) memcpy (pop_data, tmp->data, tmp->size);
+
+    list->number_of_elements = list->number_of_elements - 1;
+    list->size = list->size - tmp->size;
+
     tmp->next = NULL;
     tmp->prev = NULL;
     tmp->size = 0;
@@ -255,7 +260,7 @@ void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t
     free (tmp);
 }
 
-int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element)
+int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element, void *pop_data)
 {
     int found = 0;
     struct imamLL_element *tmp = list->first;
@@ -277,12 +282,6 @@ int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element)
                 list->current = NULL;
                 list->first = NULL;
                 list->last = NULL;
-                tmp->next = NULL;
-                tmp->prev = NULL;
-                tmp->size = 0;
-                free (tmp->data);
-                tmp->data = NULL;
-                free (tmp);
                 break;
             } 
             else if (tmp == list->first)
@@ -290,12 +289,6 @@ int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element)
                 if (list->current == list->first) list->current = next;
                 list->first = next;
                 list->first->prev = NULL;
-                tmp->next = NULL;
-                tmp->prev = NULL;
-                tmp->size = 0;
-                free (tmp->data);
-                tmp->data = NULL;
-                free (tmp);
                 break;
             }
             else if (tmp == list->last)
@@ -303,12 +296,6 @@ int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element)
                 if (list->current == list->last) list->current = prev;
                 list->last = prev;
                 list->last->next = NULL;
-                tmp->next = NULL;
-                tmp->prev = NULL;
-                tmp->size = 0;
-                free (tmp->data);
-                tmp->data = NULL;
-                free (tmp);
                 break;
             }
             else
@@ -316,14 +303,17 @@ int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element)
                 if (list->current == tmp) list->current = prev;
                 next->prev = prev;
                 prev->next = next;
-                tmp->next = NULL;
-                tmp->prev = NULL;
-                tmp->size = 0;
-                free (tmp->data);
-                tmp->data = NULL;
-                free (tmp);
                 break;
             }
+
+            if (pop_data != NULL) memcpy (pop_data, tmp->data, tmp->size);
+
+            tmp->next = NULL;
+            tmp->prev = NULL;
+            tmp->size = 0;
+            free (tmp->data);
+            tmp->data = NULL;
+            free (tmp);
         }
         tmp = tmp->next;
     }
