@@ -38,7 +38,7 @@ extern "C" {
 #define IMAM_LL_VERSION 15
     
 enum imamLL_errors {
-    MEMORY_ALLOCATION = 1,
+    MEMORY_ALLOCATION_FAILED = 1,
     EMPTY_LIST = 2,
     NO_MATCHING_ELEMENT = 3
 };
@@ -85,7 +85,7 @@ extern int imamLL_list_destroy (struct imamLL *list);
 extern int imamLL_list_free (struct imamLL *list);
 
 /* rewinds the current element to the first element or the last element*/
-extern struct imamLL_element *imamLL_list_rewind (struct imamLL *list, int8_t direction);
+extern struct imamLL_element *imamLL_list_rewind (struct imamLL *list, int8_t direction, size_t steps);
 
 /* copies last error information into *error_message */
 extern void imamLL_list_error (struct imamLL *list, char *error_message);
@@ -97,6 +97,9 @@ extern struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t el
 /* frees and removes the first matching element *element from the list */
 /* Return Value: upon successful returns 1, otherwise returns 0 and -1 and sets appropriate error no to error variable of a list*/
 extern int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element);
+
+/* frees and removes the serial number selected element from the list */
+extern void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t num);
 
 /* returns the pointer of a matching element */
 /* Return Value: upon successful returns pointer to first found element in a list, otherwise returns NULL and sets appropriate error no to error variable of a list*/
