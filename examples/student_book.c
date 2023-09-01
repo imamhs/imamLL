@@ -95,7 +95,7 @@ void show_students (void)
     printf ("\n");
     printf ("There are %ld students in the book\n", student_list->number_of_elements);
     printf ("Total memory allocated %ld bytes\n\n", student_list->size);
-    element = imamLL_list_rewind (student_list, BACKWARD);
+    element = imamLL_list_rewind (student_list, BACKWARD, 0);
     while (1) {
         if (element == NULL) break;
         else {
@@ -135,13 +135,13 @@ void delete_student (void)
     printf ("\n");
     printf ("Student id: ");
     scanf ("%ld", &id);
-    element = imamLL_list_rewind (student_list, BACKWARD);
+    element = imamLL_list_rewind (student_list, BACKWARD, 0);
     while (1) {
         if (element == NULL) break;
         else {
             student = (struct Student *) element->data;
             if (student->id == id) {
-                if (imamLL_element_remove (student_list, element) != 1) {
+                if (imamLL_element_remove (student_list, element, NULL) != 1) {
                     printf ("Can not delete student.\n");
                     return;
                 }
@@ -164,7 +164,7 @@ void find_student (void)
     printf ("\n");
     printf ("Student id: ");
     scanf ("%ld", &id);
-    element = imamLL_list_rewind (student_list, BACKWARD);
+    element = imamLL_list_rewind (student_list, BACKWARD, 0);
     while (1) {
         if (element == NULL) break;
         else {

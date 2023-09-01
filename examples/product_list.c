@@ -59,7 +59,7 @@ int main (int argc, char** argv)
     if (element == NULL) printf ("Error allocating memory for Nozzle element\n");
     strcpy ((char *)element->data, product);
     
-    element = imamLL_list_rewind (product_list, BACKWARD);
+    element = imamLL_list_rewind (product_list, BACKWARD, 0);
     while (1) {
         if (element == NULL) break;
         else printf ("%s\n", (char *)element->data);
@@ -74,10 +74,10 @@ int main (int argc, char** argv)
     
     if (element == NULL) printf ("Error getting the Switch element");
     else {
-        if (imamLL_element_remove (product_list, element) != 1) printf ("Error removing the Switch element\n");
+        if (imamLL_element_remove (product_list, element, NULL) != 1) printf ("Error removing the Switch element\n");
     }
     
-    element = imamLL_list_rewind (product_list, BACKWARD);
+    element = imamLL_list_rewind (product_list, BACKWARD, 0);
     while (1) {
         if (element == NULL) break;
         else printf ("%s\n", (char *)element->data);
