@@ -88,17 +88,18 @@ int imamLL_list_free (struct imamLL *list)
 
 struct imamLL_element *imamLL_list_rewind (struct imamLL *list, int8_t direction, size_t steps)
 {
-    if (steps == 0) {
+    if (steps == list->number_of_elements) return list->current;
+    else if (steps == 0) {
         if (direction == BACKWARD) list->current = list->first;
         else if (direction == FORWARD) list->current = list->last;
     }
     else {
-        size_t count = 1;
+        size_t count = 0;
         struct imamLL_element *tmp = NULL;
         if (direction == BACKWARD) tmp = list->first;
         else if (direction == FORWARD) tmp = list->last;
         while ((tmp != NULL) && (count < steps)) {
-            count = count + 1;
+            count++;
             if (direction == BACKWARD) tmp = tmp->next;
             else if (direction == FORWARD) tmp = tmp->prev;
         }
@@ -117,8 +118,7 @@ void imamLL_list_error (struct imamLL *list, char *error_message)
 
 struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_size, uint8_t position)
 {
-    if (list->first == NULL)
-    {
+    if (list->first == NULL) {
         list->first = (struct imamLL_element *) malloc(imamLL_element_s);
         if (list->first == NULL) {
             list->error = MEMORY_ALLOCATION_FAILED;
@@ -140,8 +140,7 @@ struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_s
         list->current = list->first;
         return list->first;
     }
-    else
-    {
+    else {
         struct imamLL_element *tmp = NULL;
         tmp = (struct imamLL_element *) malloc(imamLL_element_s);
         if (tmp == NULL) {
@@ -157,18 +156,12 @@ struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_s
         if (position == AT_END) {
             tmp->prev = list->last;
             tmp->next = NULL;
-            tmp->size = element_size;
-            list->size = list->size + tmp->size;
-            list->number_of_elements = list->number_of_elements + 1;
             list->last->next = tmp;
             list->last = tmp;
         }
         else if (position == AT_START) {
             tmp->prev = NULL;
             tmp->next = list->first;
-            tmp->size = element_size;
-            list->size = list->size + tmp->size;
-            list->number_of_elements = list->number_of_elements + 1;
             list->first->prev = tmp;
             list->first = tmp;
         }
@@ -176,18 +169,12 @@ struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_s
             if (list->current == NULL) {
                 tmp->prev = list->last;
                 tmp->next = NULL;
-                tmp->size = element_size;
-                list->size = list->size + tmp->size;
-                list->number_of_elements = list->number_of_elements + 1;
                 list->last->next = tmp;
                 list->last = tmp;
             }
             else if (list->current->next == NULL) {
                 tmp->prev = list->current;
                 tmp->next = NULL;
-                tmp->size = element_size;
-                list->size = list->size + tmp->size;
-                list->number_of_elements = list->number_of_elements + 1;
                 list->current->next = tmp;
                 list->last = tmp;
             }
@@ -195,41 +182,117 @@ struct imamLL_element *imamLL_element_add (struct imamLL *list, size_t element_s
                 struct imamLL_element *next = list->current->next;
                 tmp->prev = list->current;
                 tmp->next = list->current->next;
-                tmp->size = element_size;
-                list->size = list->size + tmp->size;
-                list->number_of_elements = list->number_of_elements + 1;
                 list->current->next = tmp;
                 next->prev = tmp;
             }
         }
+        tmp->size = element_size;
+        list->size = list->size + tmp->size;
+        list->number_of_elements = list->number_of_elements + 1;
         list->current = tmp;
         return tmp;
     }
 }
 
-void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t num, void *pop_data)
+struct imamLL_element *imamLL_element_add_number (struct imamLL *list, size_t element_size, int8_t direction, size_t num)
 {
-    size_t count = 1;
+    size_t count = 0;
+    struct imamLL_element *cursor = NULL;
     struct imamLL_element *tmp = NULL;
     struct imamLL_element *next = NULL;
     struct imamLL_element *prev = NULL;
 
-    if (direction == BACKWARD) tmp = list->first;
-    else if (direction == FORWARD) tmp = list->last;
+    if (list->first == NULL) {
+        list->first = (struct imamLL_element *) malloc(imamLL_element_s);
+        if (list->first == NULL) {
+            list->error = MEMORY_ALLOCATION_FAILED;
+            return NULL;
+        }
+        list->first->data = (char *) malloc (sizeof (char) * element_size);
+        if (list->first->data == NULL) {
+            free (list->first);
+            list->first = NULL;
+            list->error = MEMORY_ALLOCATION_FAILED;
+            return NULL;
+        }
+        list->first->prev = NULL;
+        list->first->next = NULL;
+        list->first->size = element_size;
+        list->size = list->size + list->first->size;
+        list->number_of_elements = list->number_of_elements + 1;
+        list->last = list->first;
+        list->current = list->first;
+        return list->first;
+    }
 
+    if (direction == BACKWARD) cursor = list->first;
+    else if (direction == FORWARD) cursor = list->last;
+
+    while ((cursor != NULL) && (count < num)) {
+        count++;
+        if (direction == BACKWARD) cursor = cursor->next;
+        else if (direction == FORWARD) cursor = cursor->prev;
+    }
+
+    next = cursor->next;
+    prev = cursor->prev;
+
+    tmp = (struct imamLL_element *) malloc(imamLL_element_s);
     if (tmp == NULL) {
+        list->error = MEMORY_ALLOCATION_FAILED;
+        return NULL;
+    }
+    tmp->data = (char *) malloc (sizeof (char) * element_size);
+    if (tmp->data == NULL) {
+        free (tmp);
+        list->error = MEMORY_ALLOCATION_FAILED;
+        return NULL;
+    }
+
+    if ((prev != NULL) && (next == NULL)) {
+        tmp->next = NULL;
+        list->last = tmp;
+    }
+    else {
+        tmp->next = next;
+        next->prev = tmp;
+    }
+
+    cursor->next = tmp;
+    tmp->prev = cursor;
+    tmp->size = element_size;
+    list->current = tmp;
+    list->number_of_elements = list->number_of_elements + 1;
+    list->size = list->size + tmp->size;
+
+    return tmp;
+}
+
+void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t num, void *pop_data)
+{
+    size_t count = 0;
+    struct imamLL_element *cursor = NULL;
+    struct imamLL_element *next = NULL;
+    struct imamLL_element *prev = NULL;
+
+    if (num == list->number_of_elements) return;
+
+    if (direction == BACKWARD) cursor = list->first;
+    else if (direction == FORWARD) cursor = list->last;
+
+    if (cursor == NULL) {
         list->error = EMPTY_LIST;
         return;
     }
 
-    while ((tmp != NULL) && (count < num)) {
+    while ((cursor != NULL) && (count < num)) {
         count = count + 1;
-        if (direction == BACKWARD) tmp = tmp->next;
-        else if (direction == FORWARD) tmp = tmp->prev;
+        if (direction == BACKWARD) cursor = cursor->next;
+        else if (direction == FORWARD) cursor = cursor->prev;
     }
 
-    next = tmp->next;
-    prev = tmp->prev;
+    next = cursor->next;
+    prev = cursor->prev;
 
     if ((next != NULL) && (prev != NULL)) {
         next->prev = prev;
@@ -247,78 +310,111 @@ void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t
         list->current = prev;
     }
 
-    if (pop_data != NULL) memcpy (pop_data, tmp->data, tmp->size);
+    if (pop_data != NULL) memcpy (pop_data, cursor->data, cursor->size);
 
     list->number_of_elements = list->number_of_elements - 1;
-    list->size = list->size - tmp->size;
+    list->size = list->size - cursor->size;
 
-    tmp->next = NULL;
-    tmp->prev = NULL;
-    tmp->size = 0;
-    free (tmp->data);
-    tmp->data = NULL;
-    free (tmp);
+    cursor->next = NULL;
+    cursor->prev = NULL;
+    cursor->size = 0;
+    free (cursor->data);
+    cursor->data = NULL;
+    free (cursor);
 }
 
 int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element, void *pop_data)
 {
-    int found = 0;
-    struct imamLL_element *tmp = list->first;
-    if (tmp == NULL) {
+    if (list->number_of_elements == 0) {
         list->error = EMPTY_LIST;
         return -1;
     }
-    while (tmp != NULL)
-    {
-        if (memcmp (tmp, element, imamLL_element_s) == 0)
-        {
-            struct imamLL_element *next = tmp->next;
-            struct imamLL_element *prev = tmp->prev;
-            found = 1;
-            list->number_of_elements = list->number_of_elements - 1;
-            list->size = list->size - tmp->size;
-            if ((tmp == list->first) && (tmp == list->last))
-            {
-                list->current = NULL;
-                list->first = NULL;
-                list->last = NULL;
-                break;
-            } 
-            else if (tmp == list->first)
-            {
-                if (list->current == list->first) list->current = next;
-                list->first = next;
-                list->first->prev = NULL;
-                break;
-            }
-            else if (tmp == list->last)
-            {
-                if (list->current == list->last) list->current = prev;
-                list->last = prev;
-                list->last->next = NULL;
-                break;
-            }
-            else
-            {
-                if (list->current == tmp) list->current = prev;
-                next->prev = prev;
-                prev->next = next;
-                break;
-            }
 
-            if (pop_data != NULL) memcpy (pop_data, tmp->data, tmp->size);
+    if (element == NULL) {
+        struct imamLL_element *tmp = list->current;
+        struct imamLL_element *next = list->current->next;
+        struct imamLL_element *prev = list->current->prev;
 
-            tmp->next = NULL;
-            tmp->prev = NULL;
-            tmp->size = 0;
-            free (tmp->data);
-            tmp->data = NULL;
-            free (tmp);
+        if ((tmp == list->first) && (tmp == list->last)) {
+            list->current = NULL;
+            list->first = NULL;
+            list->last = NULL;
         }
-        tmp = tmp->next;
+        else if (tmp == list->first) {
+            list->current = next;
+            list->first = next;
+            list->first->prev = NULL;
+        }
+        else if (tmp == list->last) {
+            list->current = prev;
+            list->last = prev;
+            list->last->next = NULL;
+        }
+        else {
+            list->current = prev;
+            next->prev = prev;
+            prev->next = next;
+        }
+
+        if (pop_data != NULL) memcpy (pop_data, tmp->data, tmp->size);
+
+        list->number_of_elements = list->number_of_elements - 1;
+        list->size = list->size - tmp->size;
+        tmp->next = NULL;
+        tmp->prev = NULL;
+        tmp->size = 0;
+        free (tmp->data);
+        tmp->data = NULL;
+        free (tmp);
+        return 1;
     }
-    if (found == 0) list->error = NO_MATCHING_ELEMENT;
-    return found;
+    else {
+        int found = 0;
+        struct imamLL_element *tmp = list->first;
+
+        while (tmp != NULL) {
+            if (memcmp (tmp, element, imamLL_element_s) == 0) {
+                struct imamLL_element *next = tmp->next;
+                struct imamLL_element *prev = tmp->prev;
+                if ((tmp == list->first) && (tmp == list->last)) {
+                    list->current = NULL;
+                    list->first = NULL;
+                    list->last = NULL;
+                }
+                else if (tmp == list->first) {
+                    if (list->current == list->first) list->current = next;
+                    list->first = next;
+                    list->first->prev = NULL;
+                }
+                else if (tmp == list->last) {
+                    if (list->current == list->last) list->current = prev;
+                    list->last = prev;
+                    list->last->next = NULL;
+                }
+                else {
+                    if (list->current == tmp) list->current = prev;
+                    next->prev = prev;
+                    prev->next = next;
+                }
+
+                if (pop_data != NULL) memcpy (pop_data, tmp->data, tmp->size);
+
+                found = 1;
+                list->number_of_elements = list->number_of_elements - 1;
+                list->size = list->size - tmp->size;
+                tmp->next = NULL;
+                tmp->prev = NULL;
+                tmp->size = 0;
+                free (tmp->data);
+                tmp->data = NULL;
+                free (tmp);
+                break;
+            }
+            tmp = tmp->next;
+        }
+        if (found == 0) list->error = NO_MATCHING_ELEMENT;
+        return found;
+    }
 }
 
 struct imamLL_element *imamLL_element_get (struct imamLL *list, const void *element_data, size_t data_size)
