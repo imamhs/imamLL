@@ -225,6 +225,8 @@ struct imamLL_element *imamLL_element_add_number (struct imamLL *list, size_t el
         return list->first;
     }
 
+    if (num == list->number_of_elements) return list->current;
+
     if (direction == BACKWARD) cursor = list->first;
     else if (direction == FORWARD) cursor = list->last;
 
@@ -249,13 +251,18 @@ struct imamLL_element *imamLL_element_add_number (struct imamLL *list, size_t el
         return NULL;
     }
 
-    if ((prev != NULL) && (next == NULL)) {
-        tmp->next = NULL;
-        list->last = tmp;
-    }
-    else {
+    if ((next != NULL) && (prev != NULL)) {
         tmp->next = next;
         next->prev = tmp;
+    }
+    else if ((next != NULL) && (prev == NULL)) {
+        tmp->next = next;
+        next->prev = tmp;
+        list->first = cursor;
+    }
+    else if ((prev != NULL) && (next == NULL)) {
+        tmp->next = NULL;
+        list->last = tmp;
     }
 
     cursor->next = tmp;
@@ -286,7 +293,7 @@ void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t
     }
 
     while ((cursor != NULL) && (count < num)) {
-        count = count + 1;
+        count++;
         if (direction == BACKWARD) cursor = cursor->next;
         else if (direction == FORWARD) cursor = cursor->prev;
     }
@@ -297,7 +304,7 @@ void imamLL_element_remove_number (struct imamLL *list, int8_t direction, size_t
     if ((next != NULL) && (prev != NULL)) {
         next->prev = prev;
         prev->next = next;
-        list->current = prev;
+        list->current = next;
     }
     else if ((next != NULL) && (prev == NULL)) {
         next->prev = NULL;
@@ -351,7 +358,7 @@ int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element, 
             list->last->next = NULL;
         }
         else {
-            list->current = prev;
+            list->current = next;
             next->prev = prev;
             prev->next = next;
         }
@@ -392,7 +399,7 @@ int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element, 
                     list->last->next = NULL;
                 }
                 else {
-                    if (list->current == tmp) list->current = prev;
+                    if (list->current == tmp) list->current = next;
                     next->prev = prev;
                     prev->next = next;
                 }
