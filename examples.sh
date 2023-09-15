@@ -26,4 +26,11 @@ then
 echo "Error compiling student_book.c"
 fi
 
+gcc -Wall -o number_list_pop number_list_pop.c -limamll
+
+if [ "$?" -ne 0 ]
+then
+echo "Error compiling number_list_pop.c"
+fi
+
 exit 0
