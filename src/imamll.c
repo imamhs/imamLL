@@ -424,10 +424,14 @@ int imamLL_element_remove (struct imamLL *list, struct imamLL_element *element, 
     }
 }
 
-struct imamLL_element *imamLL_element_get (struct imamLL *list, const void *element_data, size_t data_size)
+struct imamLL_element *imamLL_element_get (struct imamLL *list, const void *element_data, size_t data_size, uint8_t follow_cursor)
 {
     int found = 0;
-    struct imamLL_element *tmp = list->first;
+    struct imamLL_element *tmp = NULL;
+
+    if (follow_cursor == 0) tmp = list->first;
+    else tmp = list->current;
+
     if (tmp == NULL) {
         list->error = EMPTY_LIST;
         return NULL;

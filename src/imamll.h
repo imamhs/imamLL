@@ -107,7 +107,7 @@ extern void imamLL_element_remove_number (struct imamLL *list, int8_t direction,
 
 /* returns the pointer of a matching element */
 /* Return Value: upon successful returns pointer to first found element in a list, otherwise returns NULL and sets appropriate error no to error variable of a list*/
-extern struct imamLL_element *imamLL_element_get (struct imamLL *list, const void *element_data, size_t data_size);
+extern struct imamLL_element *imamLL_element_get (struct imamLL *list, const void *element_data, size_t data_size, uint8_t follow_cursor);
 
 /* returns the pointer of the next element in the list */
 /* Return Value: upon successful returns pointer to the next element in a list, otherwise returns NULL*/
