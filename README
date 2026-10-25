@@ -16,10 +16,6 @@ imamLL is written in C, but should work with C++ natively.
 
 To install imamLL, execute build.sh script in the terminal.
 
-After installing the library to compile your code using gcc just add -limamll in the compile command, e.g: gcc -Wall -o main main.c -limamll
+After installing the library to compile your code just add -limamll in the compile command, e.g: gcc -Wall -o main main.c -limamll
 
 This library is distributed under zlib license. Please read License for more information
-
-Enjoy!
-
-    Imam Hossain (emamhd@gmail.com)
